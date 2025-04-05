@@ -1,55 +1,60 @@
-1.Создайте функцию, которая принимает кол-во сек и формат их в кол-во дней часов. Пример: 123456 ->'1 день 10 часов 17 минут 36 секунд '
-sec_to_day ФУНКЦИЯ СОЗДАТЬ(секунды INT) 
-ВОЗВРАЩАЕТ VARCHAR(250)
-ДЕТЕРМИНИРОВАННАЯ
-НАЧАЛО
- ОБЪЯВЛЕНИЕ результата VARCHAR(250);
- ОБЪЯВЛЕНИЕ дней INT ПО УМОЛЧАНИЮ 0;
- ОБЪЯВЛЕНИЕ часов INT ПО УМОЛЧАНИЮ 0;
- ОБЪЯВЛЕНИЕ минут INT ПО УМОЛЧАНИЮ 0;
-
- -- считаем дни
- ЕСЛИ секунды >= 86400 , ТО
- УСТАНОВИТЬ дни = количество секунд в делении 86400;
- УСТАНОВИТЕ секунды = % 86400 в секундах;
- ЗАВЕРШИТЕ, ЕСЛИ;
-
- -- считаем часы
- ЕСЛИ секунды >= 3600 , ТО
- УСТАНОВИТЕ часы = число секунд 3600;
- SET секунды = секунды % 3600; 
- КОНЕЦ ЕСЛИ;
-
- -- считаем минуты / секунды
- ЕСЛИ секунды >= 60 ТОГДА
- SET минуты = секунды DIV 60;
- SET секунды = секунды % 60;
- КОНЕЦ ЕСЛИ;
- 
- SET результат = СОЕДИНИТЬ(
- ПРИВЕСТИ (дни КАК ЗНАЧЕНИЕ В ВИДЕ БУКВ), ' дней ',
- ПРИВЕСТИ (часы КАК ЗНАЧЕНИЕ В ВИДЕ БУКВ), ' час ',
- ПРИВЕСТИ (минуты КАК ЗНАЧЕНИЕ В ВИДЕ БУКВ), ' минут ');
-
- SET результат = СОЕДИНИТЬ (результат, ПРИВЕСТИ (секунды КАК ЗНАЧЕНИЕ В ВИДЕ БУКВ), ' сек.');
- 
- ВОЗВРАТИТЬ результат;
- КОНЕЦ;
-2. Выведите только чётные числа от 1 до 10. Пример: 2,4,6,8,10
-РАЗДЕЛИТЕЛЬ $$ 
-
-СОЗДАЕМ ПРОЦЕДУРУ even_numbers (В count_number int, выводим результат varchar(255))
+# HW_SQL Столбовой Егор Васильевич
+## 1.Создайте функцию, которая принимает кол-во сек и формат их в кол-во дней часов. Пример: 123456 ->'1 days 10 hours 17 minutes 36 seconds '
+```sql
+CREATE FUNCTION sec_to_day(seconds INT) 
+RETURNS VARCHAR(250)
+DETERMINISTIC
 BEGIN
- ОБЪЯВИТЬ i int ПО УМОЛЧАНИЮ 2;
+  DECLARE result VARCHAR(250);
+  DECLARE days INT DEFAULT 0;
+  DECLARE hours INT DEFAULT 0;
+  DECLARE minutes INT DEFAULT 0;
 
- УСТАНОВИТЬ результат = '';
+  -- считаем дни
+  IF seconds >= 86400 THEN
+    SET days = seconds DIV 86400;
+    SET seconds = seconds % 86400;
+  END IF;
 
- ПОКА i < количество_итераций, ВЫПОЛНЯТЬ
- SET результат = СОЕДИНИТЬ(результат, CAST(i КАК символ), ' '); 
-  SET i = i + 2;
-  КОНЕЦ ПОКА;
+  -- считаем часы
+  IF seconds >= 3600 THEN
+    SET hours = seconds DIV 3600;
+    SET seconds = seconds % 3600; 
+  END IF;
 
-  КОНЕЦ
- $$
+  -- считаем минуты / секунды
+  IF seconds >= 60 THEN
+    SET minutes = seconds DIV 60;
+    SET seconds = seconds % 60;
+  END IF;
+  
+  SET result = CONCAT(
+                    CAST(days AS CHAR), ' дней ',
+                    CAST(hours AS CHAR), ' час ',
+                    CAST(minutes AS CHAR), ' минут ');
 
- РАЗДЕЛИТЕЛЬ ;
+  SET result = CONCAT(result, CAST(seconds AS CHAR), ' сек.');
+  
+  RETURN result;
+END;
+```
+## 2. Выведите только четные числа от 1 до 10. Пример: 2,4,6,8,10
+```sql
+DELIMITER $$ 
+
+CREATE PROCEDURE even_numbers (IN count_number int, OUT result varchar(255))
+BEGIN
+  DECLARE i int DEFAULT 2;
+
+  SET result = '';
+
+  WHILE i < count_number DO
+    SET result = CONCAT(result, CAST(i AS char), ' '); 
+    SET i = i + 2;
+  END WHILE;
+
+END
+$$
+
+DELIMITER ;
+```
