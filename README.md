@@ -1,4 +1,4 @@
-# HW_SQL Столбовой Егор Васильевич
+
 ## 1.Создайте функцию, которая принимает кол-во сек и формат их в кол-во дней часов. Пример: 123456 ->'1 days 10 hours 17 minutes 36 seconds '
 ```sql
 CREATE FUNCTION sec_to_day(seconds INT) 
